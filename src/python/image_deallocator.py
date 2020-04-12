@@ -68,17 +68,18 @@ def assemble_img(new_name: str, locator: Dict[str, np.ndarray], axis: int = 0) -
     return np.concatenate([locator[c] for c in new_name], axis=axis)
 
 
-def deallocate_img(data: Dict[str, str], new_name: str) -> np.ndarray:
+def deallocate_img(data: Dict[str, str], new_name: str, axis: int = 0) -> np.ndarray:
     """
     Divides image into parts based on given name and assembles it to a new image based on new name
     :param data: Object consisting of name and direction
     :param new_name: Name
+    :param axis: 0 for horizontal and 1 for vertical
     :return: New image representation as a numpy array
     """
     name, direction = data['name'], data['dir']
     img = load_img(direction)
-    divisions = get_divisions(img, name, 0)
-    return assemble_img(new_name, divisions)
+    divisions = get_divisions(img, name, axis)
+    return assemble_img(new_name, divisions, axis)
 
 
 def save_img(name: str, img: np.ndarray) -> None:
@@ -93,10 +94,10 @@ def save_img(name: str, img: np.ndarray) -> None:
 
 def test_image_deallocation():
     file = 'meta/data.json'
-    data = load_json(file)[0]
+    data = load_json(file)[2]
     print(data)
-    new_name = 'toph'
-    img = deallocate_img(data, new_name)
+    new_name = 'dede'
+    img = deallocate_img(data, new_name, 1)
     cv.imshow("EEEEE", img)
     cv.waitKey(0)
     save_img('new_img/%s.png' % new_name, img)
