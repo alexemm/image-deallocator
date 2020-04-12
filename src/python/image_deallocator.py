@@ -17,14 +17,13 @@ def load_json(file: str) -> Dict[str, str]:
     return data
 
 
-def load_img(file: str, mode: int = 1) -> np.ndarray:
+def load_img(file: str) -> np.ndarray:
     """
     Loads image file as 3D-Matrix
     :param file: relative path to file
-    :param mode: 0 for grayscale, 1 for coloured
     :return: image file as Numpy 3D-Matrix
     """
-    return cv.imread(file, mode)
+    return cv.imread(file, cv.IMREAD_UNCHANGED)
 
 
 def get_divisions(img: np.ndarray, name: str, axis: int = 0) -> Dict[str, np.ndarray]:
