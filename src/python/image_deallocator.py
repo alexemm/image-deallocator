@@ -1,9 +1,11 @@
 import cv2 as cv
 import json
 import numpy as np
+import itertools as it
 
-from collections import Counter
-from typing import Dict, List
+from collections import defaultdict
+from typing import List, Dict
+from os import path, mkdir
 
 
 def load_json(file: str) -> Dict[str, str]:
@@ -26,35 +28,23 @@ def load_img(file: str) -> np.ndarray:
     return cv.imread(file, cv.IMREAD_UNCHANGED)
 
 
-def get_divisions(img: np.ndarray, name: str, axis: int = 0) -> Dict[str, np.ndarray]:
+def get_divisions(img: np.ndarray, name: str, axis: int = 0) -> Dict[str, List[np.ndarray]]:
     """
-    Divides the image, based on the character which is allocated to
-    :param img: Image representation as a numpy array
-    :param name: Name
-    :param axis: 0 for horizontal and 1 for vertical
-    :return: Divisions based on position of char. Returned as dictionary
-    """
-    name = name.lower()
-    # Don't know how to handle multiple occurrence for one character
-    if len(list(filter(lambda x: x[1] > 1, Counter(name).items()))) != 0:
-        return get_divisions_non_determined(img, name, axis)[0]
-    return dict(zip(list(name), np.array_split(img, len(name), axis=axis)))
-
-
-def get_divisions_non_determined(img: np.ndarray, name: str, axis: int = 0) -> List[Dict[str, np.ndarray]]:
-    """
-    Divides the image, based on the character which is allocated to. This handles the special case, where not all chars
-    in the string are unique.
+    Divides the image, based on the character which is allocated to. This handles also the special case, where not all
+    chars in the string are unique.
     :param img: Image representation as a numpy array
     :param name: Name
     :param axis: 0 for horizontal and 1 for vertical
     :return: Divisions based on position of char. Returned as List of dictionaries
     """
     # TODO: Implement this
-    return [{'': img}]
+    ret = defaultdict(list)
+    for key, value in zip(list(name), np.array_split(img, len(name), axis=axis)):
+        ret[key].append(value)
+    return dict(ret)
 
 
-def assemble_img(new_name: str, locator: Dict[str, np.ndarray], axis: int = 0) -> np.ndarray:
+def assemble_img(new_name: str, locator: Dict[str, List[np.ndarray]], axis: int = 0) -> List[np.ndarray]:
     """
     Assembles parts of the old image to a new image based on the new name.
     :param new_name: New name, which only consists of characters from the original name
@@ -65,10 +55,11 @@ def assemble_img(new_name: str, locator: Dict[str, np.ndarray], axis: int = 0) -
     new_name = new_name.lower()
     if not set(new_name) <= set(locator.keys()):
         new_name = ''.join(locator.keys()).lower()
-    return np.concatenate([locator[c] for c in new_name], axis=axis)
+    indices = [i for i in it.product(*[list(range(0, len(locator[c]))) for c in new_name])]
+    return [np.concatenate([locator[c][index[idx]] for idx, c in enumerate(new_name)], axis=axis) for index in indices]
 
 
-def deallocate_img(data: Dict[str, str], new_name: str, axis: int = 0) -> np.ndarray:
+def deallocate_img(data: Dict[str, str], new_name: str, axis: int = 0) -> List[np.ndarray]:
     """
     Divides image into parts based on given name and assembles it to a new image based on new name
     :param data: Object consisting of name and direction
@@ -87,20 +78,37 @@ def save_img(name: str, img: np.ndarray) -> None:
     Saves numpy array as image file
     :param name: Name of file
     :param img: Image representation as a numpy array
+    :param dir: directory to destination folder
     :return: None
     """
     cv.imwrite(name, img)
 
 
+def save_images(name: str, images: List[np.ndarray], dir: str = 'new_img/') -> None:
+    """
+    Creates folder if there is none and saves all the images in the list
+    :param name: Name of person in image
+    :param images: List of images
+    :param dir: directory to destination folder
+    :return:
+    """
+    dest = dir + name
+    if not path.exists(dest):
+        mkdir(dest)
+    for i, img in enumerate(images):
+        save_img("%s/%i.png" % (dest, i), img)
+
+
 def test_image_deallocation():
     file = 'meta/data.json'
-    data = load_json(file)[2]
+    data = load_json(file)[0]
     print(data)
-    new_name = 'dede'
-    img = deallocate_img(data, new_name, 1)
-    cv.imshow("EEEEE", img)
-    cv.waitKey(0)
-    save_img('new_img/%s.png' % new_name, img)
+    new_name = 'toto'
+    imgs = deallocate_img(data, new_name, 0)
+    # for img in imgs:
+    #     cv.imshow("EEEEE", img)
+    #     cv.waitKey(0)
+    save_images(new_name, imgs)
 
 
 if __name__ == "__main__":
