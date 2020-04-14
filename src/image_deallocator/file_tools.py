@@ -25,6 +25,7 @@ def load_img(file: str) -> np.ndarray:
     """
     return cv.imread(file, cv.IMREAD_UNCHANGED)
 
+
 def save_img(name: str, img: np.ndarray) -> None:
     """
     Saves numpy array as image file
