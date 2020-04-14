@@ -16,13 +16,14 @@ def create_db(direction):
     save_json(direction, {})
 
 
-def add_original_image(name: str, filename: Optional[str] = None) -> None:
+def add_original_image(name: str, filename: Optional[str] = None):
     """
 
     :param name:
     :param filename:
     :return:
     """
+    name = name.lower()
     data = load_json(DB_DIR)
     if name not in data.keys():
         data[name] = []
@@ -35,9 +36,9 @@ def add_original_image(name: str, filename: Optional[str] = None) -> None:
         'dir': direction,
         'new_imgs': {}
     }
-    # TODO: Check if it really appends it inplace
     data[name].append(new_obj)
     save_json(DB_DIR, data)
+    return new_obj
 
 
 def add_new_image(name: str, id: int, new_name, dirs: List[str]):
@@ -49,6 +50,7 @@ def add_new_image(name: str, id: int, new_name, dirs: List[str]):
     :param dirs:
     :return:
     """
+    name = name.lower()
     data = load_json(DB_DIR)
     try:
         data[name][id]['new_imgs'][new_name] = {
@@ -61,6 +63,16 @@ def add_new_image(name: str, id: int, new_name, dirs: List[str]):
     save_json(DB_DIR, data)
 
 
+def get_image(name: str, id: int):
+    name = name.lower()
+    data = load_json(DB_DIR)
+    if name not in data.keys():
+        return None
+    if id not in range(0, len(data[name])):
+        return None
+    return data[name][id]
+
+
 def delete_original_image(name: str, id: int):
     """
 
@@ -68,6 +80,7 @@ def delete_original_image(name: str, id: int):
     :param id:
     :return:
     """
+    name = name.lower()
     data = load_json(DB_DIR)
     if name not in data.keys():
         return

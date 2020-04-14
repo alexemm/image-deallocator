@@ -45,6 +45,7 @@ def deallocate_img(data: Dict[str, str], new_name: str, axis: int = 0) -> List[n
     :param axis: 0 for horizontal and 1 for vertical
     :return: New image representation as a numpy array
     """
+    new_name = new_name.lower()
     name, direction = data['name'], data['dir']
     img = load_img(direction)
     divisions = get_divisions(img, name, axis)

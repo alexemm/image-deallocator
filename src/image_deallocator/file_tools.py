@@ -3,7 +3,7 @@ from typing import List, Dict
 import json
 import cv2 as cv
 import numpy as np
-from os import path, mkdir
+from os import path, makedirs
 
 
 def load_json(file: str) -> Dict[str, str]:
@@ -48,16 +48,19 @@ def save_img(name: str, img: np.ndarray) -> None:
     cv.imwrite(name, img)
 
 
-def save_images(name: str, images: List[np.ndarray], dir: str = 'new_img/') -> None:
+def save_images(images: List[np.ndarray], directory: str = 'new_img/') -> List[str]:
     """
     Creates folder if there is none and saves all the images in the list
     :param name: Name of person in image
     :param images: List of images
-    :param dir: directory to destination folder
+    :param directory: directory to destination folder
     :return:
     """
-    dest = dir + name
-    if not path.exists(dest):
-        mkdir(dest)
+    if not path.exists(directory):
+        makedirs(directory)
+    filenames = []
     for i, img in enumerate(images):
-        save_img("%s/%i.png" % (dest, i), img)
+        filename = "%s%i.png" % (directory, i)
+        save_img(filename, img)
+        filenames.append(filename)
+    return filenames

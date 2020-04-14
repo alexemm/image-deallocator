@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, abort, send_from_directory
 from file_tools import load_json
 
+from controller import save_file_from_request
+
 # this is how we initialize a flask application
 app = Flask(__name__, static_url_path='')
 
@@ -36,12 +38,11 @@ def send_new_img(path):
 @app.route('/upload', methods=['POST'])
 def upload_file():
     # checking if the file is present or not.
-    if 'file' not in request.files:
+    if 'file' not in request.files or 'name' not in request.form.keys():
         return "No file found"
-    name = ''
+    name = request.form['name']
     file = request.files['file']
-    # if file.ends
-    file.save("image_deallocator/img/test.png")
+    save_file_from_request(name, file)
     return "file successfully saved"
 
 
