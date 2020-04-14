@@ -1,0 +1,6 @@
+src/image_deallocator/meta/*
+src/image_deallocator/new_img/*
+src/image_deallocator/img/*
+src/image_deallocator/__pycache__/
+venv/
+.idea/
