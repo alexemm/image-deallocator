@@ -4,7 +4,8 @@ from file_tools import load_json, save_images
 
 def test_image_deallocation():
     file = 'meta/data.json'
-    data = load_json(file)[3]
+    name = 'alex'
+    data = load_json(file)[name][0]
     print(data)
     new_name = 'aaaaaa'
     imgs = deallocate_img(data, new_name, 1)

@@ -12,9 +12,20 @@ def load_json(file: str) -> Dict[str, str]:
     :param file: relative path to file
     :return: Dictionary of given file
     """
-    with open(file) as file:
-        data = json.load(file)
+    with open(file) as f:
+        data = json.load(f)
     return data
+
+
+def save_json(file: str, dic) -> None:
+    """
+
+    :param file:
+    :param dic:
+    :return:
+    """
+    with open(file, 'w+') as f:
+        json.dump(dic, f)
 
 
 def load_img(file: str) -> np.ndarray:

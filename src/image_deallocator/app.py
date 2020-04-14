@@ -1,13 +1,13 @@
 from flask import Flask, request, jsonify, abort, send_from_directory
-from image_deallocator.file_tools import load_json
+from file_tools import load_json
 
 # this is how we initialize a flask application
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 
 
 @app.route("/meta", methods=["GET"])
 def get_image_meta():
-    data = load_json("image_deallocator/meta/data.json")
+    data = load_json("meta/data.json")
     return jsonify(data)
 
 
@@ -17,10 +17,20 @@ def get_image_meta_id(id: int):
         id = int(id)
     except ValueError:
         abort(404)
-    data = load_json("image_deallocator/meta/data.json")
+    data = load_json("meta/data.json")
     if id not in range(0, len(data)):
         abort(404)
     return jsonify(data[id])
+
+
+@app.route('/img/<path:path>')
+def send_original_img(path):
+    return send_from_directory('img', path)
+
+
+@app.route('/new_img/<path:path>')
+def send_new_img(path):
+    return send_from_directory('new_img', path)
 
 
 @app.route('/upload', methods=['POST'])
@@ -28,6 +38,7 @@ def upload_file():
     # checking if the file is present or not.
     if 'file' not in request.files:
         return "No file found"
+    name = ''
     file = request.files['file']
     # if file.ends
     file.save("image_deallocator/img/test.png")
