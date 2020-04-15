@@ -1,1 +1,23 @@
-{}
+{
+  "lena": [
+    {
+      "name": "lena",
+      "dir": "img/0-lena.jpeg",
+      "new_imgs": {
+        "eeeeee": {
+          "new_name": "eeeeee",
+          "dirs": {
+            "axis": [
+              [
+                "new_img/lena/0/eeeeee/0/0.png"
+              ],
+              [
+                "new_img/lena/0/eeeeee/1/0.png"
+              ]
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

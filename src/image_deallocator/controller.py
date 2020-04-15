@@ -11,11 +11,11 @@ from numpy import ndarray
 
 def check_if_image_file(file: FileStorage) -> bool:
     """
-    Checks, if file is image file based on ending of file. Currently supported: png, gif, jpg
+    Checks, if file is image file based on ending of file. Currently supported: png, gif, jpg/ jpeg
     :param file: File from request body
     :return: Boolean, if file is an image file or not
     """
-    return any([file.filename.endswith(image_format) for image_format in [".jpg", ".png", ".gif"]])
+    return any([file.filename.endswith(image_format) for image_format in [".jpg", ".png", ".gif", ".jpeg"]])
 
 
 def save_file_from_request(name: str, file: FileStorage) -> None:
