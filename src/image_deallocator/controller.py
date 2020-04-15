@@ -40,14 +40,14 @@ def execute_image_deallocation(name: str, id: int, new_name: str, axis: int = 0)
     if data is None:
         return False
     imgs = deallocate_img(data, new_name, axis)
-    directory = "new_img/%s/%i/%s/" % (name, id, new_name)
+    directory = "new_img/%s/%i/%s/%i/" % (name, id, new_name, axis)
     directories = save_images(imgs, directory)
-    add_new_image(name, id, new_name, directories)
+    add_new_image(name, id, new_name, directories, axis)
     return True
 
 
 def test():
-    print(execute_image_deallocation("lara", 0, "aaaaaaaa", 1))
+    print(execute_image_deallocation("alex", 0, "eeeeee", 0))
 
 
 if __name__ == '__main__':

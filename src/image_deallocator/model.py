@@ -41,29 +41,38 @@ def add_original_image(name: str, filename: Optional[str] = None):
     return new_obj
 
 
-def add_new_image(name: str, id: int, new_name, dirs: List[str]):
+def add_new_image(name: str, id: int, new_name, dirs: List[str], axis: int = 0):
     """
 
     :param name:
     :param id:
     :param new_name:
     :param dirs:
+    :param axis:
     :return:
     """
     name = name.lower()
     data = load_json(DB_DIR)
-    try:
+    if name not in data.keys():
+        return
+    if id not in range(0, len(data[name])):
+        return
+    if new_name not in data[name][id]['new_imgs'].keys():
         data[name][id]['new_imgs'][new_name] = {
             "new_name": new_name,
-            "dirs": dirs
+            "dirs": {"axis": [[], []]}
         }
-    except KeyError as e:
-        print(e)
-        return
+    data[name][id]['new_imgs'][new_name]['dirs']['axis'][axis] = dirs
     save_json(DB_DIR, data)
 
 
 def get_image(name: str, id: int):
+    """
+
+    :param name:
+    :param id:
+    :return:
+    """
     name = name.lower()
     data = load_json(DB_DIR)
     if name not in data.keys():
