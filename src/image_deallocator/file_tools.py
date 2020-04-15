@@ -6,23 +6,23 @@ import numpy as np
 from os import path, makedirs
 
 
-def load_json(file: str) -> Dict[str, str]:
+def load_json(file: str) -> Dict[str, any]:
     """
     Loads json file as a dictionary
-    :param file: relative path to file
+    :param file: Path to file
     :return: Dictionary of given file
     """
     with open(file) as f:
-        data = json.load(f)
+        data: Dict[str, any] = json.load(f)
     return data
 
 
-def save_json(file: str, dic) -> None:
+def save_json(file: str, dic: Dict[str, any]) -> None:
     """
-
-    :param file:
-    :param dic:
-    :return:
+    Saves dictionary in json file
+    :param file: Path to file
+    :param dic: Dictionary which is saved
+    :return: None
     """
     with open(file, 'w+') as f:
         json.dump(dic, f)
@@ -58,9 +58,9 @@ def save_images(images: List[np.ndarray], directory: str = 'new_img/') -> List[s
     """
     if not path.exists(directory):
         makedirs(directory)
-    filenames = []
+    filenames: List[str] = []
     for i, img in enumerate(images):
-        filename = "%s%i.png" % (directory, i)
+        filename: str = "%s%i.png" % (directory, i)
         save_img(filename, img)
         filenames.append(filename)
     return filenames

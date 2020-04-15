@@ -3,9 +3,13 @@ from image_deallocator import deallocate_img
 from file_tools import save_images
 
 from werkzeug.utils import secure_filename
+from werkzeug.datastructures import FileStorage
+from typing import List, Dict
+
+from numpy import ndarray
 
 
-def check_if_image_file(file) -> bool:
+def check_if_image_file(file: FileStorage) -> bool:
     """
     Checks, if file is image file based on ending of file. Currently supported: png, gif, jpg
     :param file: File from request body
@@ -14,7 +18,7 @@ def check_if_image_file(file) -> bool:
     return any([file.filename.endswith(image_format) for image_format in [".jpg", ".png", ".gif"]])
 
 
-def save_file_from_request(name: str, file) -> None:
+def save_file_from_request(name: str, file: FileStorage) -> None:
     """
     Saves given file in img directory and saves meta information in model
     :param name: Name of image
@@ -23,8 +27,8 @@ def save_file_from_request(name: str, file) -> None:
     """
     if not check_if_image_file(file):
         return None
-    data = add_original_image(name, secure_filename(file.filename))
-    directory = data['dir']
+    data: Dict[str, any] = add_original_image(name, secure_filename(file.filename))
+    directory: str = data['dir']
     file.save(directory)
 
 
@@ -37,12 +41,12 @@ def execute_image_deallocation(name: str, id: int, new_name: str, axis: int = 0)
     :param axis: 0 for horizontal and 1 for vertical
     :return: Boolean whether task was successful or not
     """
-    data = get_image(name, id)
+    data: Dict[str, any] = get_image(name, id)
     if data is None:
         return False
-    imgs = deallocate_img(data, new_name, axis)
-    directory = "new_img/%s/%i/%s/%i/" % (name, id, new_name, axis)
-    directories = save_images(imgs, directory)
+    imgs: List[ndarray] = deallocate_img(data, new_name, axis)
+    directory: str = "new_img/%s/%i/%s/%i/" % (name, id, new_name, axis)
+    directories: List[str] = save_images(imgs, directory)
     add_new_image(name, id, new_name, directories, axis)
     return True
 

@@ -1,10 +1,12 @@
+from werkzeug.datastructures import FileStorage
+
 from file_tools import save_json, load_json
-from typing import List, Optional
+from typing import List, Optional, Dict
 
-# File for handling json "database""
+# File for handling json "database"
 
-DB_DIR = 'meta/data.json'
-IMAGE_DIR = 'img/'
+DB_DIR: str = 'meta/data.json'
+IMAGE_DIR: str = 'img/'
 
 
 def create_db(directory: str) -> None:
@@ -16,21 +18,21 @@ def create_db(directory: str) -> None:
     save_json(directory, {})
 
 
-def add_original_image(name: str, filename: Optional[str] = None):
+def add_original_image(name: str, filename: Optional[str] = None) -> Dict[str, any]:
     """
     Adds new original image in meta file with additional directories and returns created object.
     :param name: Name of image
     :param filename: Filename
     :return: Created new object
     """
-    name = name.lower()
-    data = load_json(DB_DIR)
+    name: str = name.lower()
+    data: Dict[str, any] = load_json(DB_DIR)
     if name not in data.keys():
-        data[name] = []
-    id = len(data[name])
-    filename = name + '.' + filename.split('.')[-1]
-    directory = IMAGE_DIR + "%i-%s" % (id, filename)
-    new_obj = {
+        data[name]: List[Dict[str, any]] = []
+    id: int = len(data[name])
+    filename: str = name + '.' + filename.split('.')[-1]
+    directory: str = IMAGE_DIR + "%i-%s" % (id, filename)
+    new_obj: Dict[str, any] = {
         'name': name,
         'dir': directory,
         'new_imgs': {}
@@ -40,7 +42,7 @@ def add_original_image(name: str, filename: Optional[str] = None):
     return new_obj
 
 
-def add_new_image(name: str, id: int, new_name, dirs: List[str], axis: int = 0):
+def add_new_image(name: str, id: int, new_name, dirs: List[str], axis: int = 0) -> None:
     """
     Adds new image with all the directories for given original image in meta
     :param name: Name of image
@@ -50,48 +52,46 @@ def add_new_image(name: str, id: int, new_name, dirs: List[str], axis: int = 0):
     :param axis: 0 for horizontal and 1 for vertical
     :return: None
     """
-    name = name.lower()
-    data = load_json(DB_DIR)
+    name: str = name.lower()
+    data: Dict[str, any] = load_json(DB_DIR)
     if name not in data.keys():
         return
     if id not in range(0, len(data[name])):
         return
     if new_name not in data[name][id]['new_imgs'].keys():
-        data[name][id]['new_imgs'][new_name] = {
+        data[name][id]['new_imgs'][new_name]: Dict[str, any] = {
             "new_name": new_name,
             "dirs": {"axis": [[], []]}
         }
-    data[name][id]['new_imgs'][new_name]['dirs']['axis'][axis] = dirs
+    data[name][id]['new_imgs'][new_name]['dirs']['axis'][axis]: List[str] = dirs
     save_json(DB_DIR, data)
 
 
-def get_image(name: str, id: int):
+def get_image(name: str, id: int) -> Dict[str, any]:
     """
     Returns the image object from meta based on given name and id
     :param name: Name of image
     :param id: Id of image
     :return: Image object with name, directory, and new images (if there are any)
     """
-    name = name.lower()
-    data = load_json(DB_DIR)
+    name: str = name.lower()
+    data: Dict[str, any] = load_json(DB_DIR)
     if name not in data.keys():
-        print('this')
         return None
     if id not in range(0, len(data[name])):
-        print('that')
         return None
     return data[name][id]
 
 
-def delete_original_image(name: str, id: int):
+def delete_original_image(name: str, id: int) -> None:
     """
     Deletes an original image in meta based on given name and id. Does nothing, if image does not exist.
     :param name: Name of image
     :param id: Id of image
     :return: None
     """
-    name = name.lower()
-    data = load_json(DB_DIR)
+    name: str = name.lower()
+    data: Dict[str, any] = load_json(DB_DIR)
     if name not in data.keys():
         return
     if id not in range(0, len(data[name])):
@@ -102,7 +102,7 @@ def delete_original_image(name: str, id: int):
     save_json(DB_DIR, data)
 
 
-def drop_db(directory: str):
+def drop_db(directory: str) -> None:
     """
     Drops whole meta and leaves it empty. Database needs to be created again.
     :param directory: Directory of db
