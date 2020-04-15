@@ -7,21 +7,21 @@ DB_DIR = 'meta/data.json'
 IMAGE_DIR = 'img/'
 
 
-def create_db(direction):
+def create_db(directory: str) -> None:
     """
-
-    :param direction:
-    :return:
+    Creates empty json object representing a database
+    :param directory: Directory of json file
+    :return: None
     """
-    save_json(direction, {})
+    save_json(directory, {})
 
 
 def add_original_image(name: str, filename: Optional[str] = None):
     """
-
-    :param name:
-    :param filename:
-    :return:
+    Adds new original image in meta file with additional directories and returns created object.
+    :param name: Name of image
+    :param filename: Filename
+    :return: Created new object
     """
     name = name.lower()
     data = load_json(DB_DIR)
@@ -42,13 +42,13 @@ def add_original_image(name: str, filename: Optional[str] = None):
 
 def add_new_image(name: str, id: int, new_name, dirs: List[str], axis: int = 0):
     """
-
-    :param name:
-    :param id:
-    :param new_name:
-    :param dirs:
-    :param axis:
-    :return:
+    Adds new image with all the directories for given original image in meta
+    :param name: Name of image
+    :param id: Id of image
+    :param new_name:  New  name of which image should be generated
+    :param dirs: List of directories to the new images
+    :param axis: 0 for horizontal and 1 for vertical
+    :return: None
     """
     name = name.lower()
     data = load_json(DB_DIR)
@@ -67,10 +67,10 @@ def add_new_image(name: str, id: int, new_name, dirs: List[str], axis: int = 0):
 
 def get_image(name: str, id: int):
     """
-
-    :param name:
-    :param id:
-    :return:
+    Returns the image object from meta based on given name and id
+    :param name: Name of image
+    :param id: Id of image
+    :return: Image object with name, directory, and new images (if there are any)
     """
     name = name.lower()
     data = load_json(DB_DIR)
@@ -85,10 +85,10 @@ def get_image(name: str, id: int):
 
 def delete_original_image(name: str, id: int):
     """
-
-    :param name:
-    :param id:
-    :return:
+    Deletes an original image in meta based on given name and id. Does nothing, if image does not exist.
+    :param name: Name of image
+    :param id: Id of image
+    :return: None
     """
     name = name.lower()
     data = load_json(DB_DIR)
@@ -102,13 +102,13 @@ def delete_original_image(name: str, id: int):
     save_json(DB_DIR, data)
 
 
-def drop_db(direction):
+def drop_db(directory: str):
     """
-
-    :param direction:
-    :return:
+    Drops whole meta and leaves it empty. Database needs to be created again.
+    :param directory: Directory of db
+    :return: None
     """
-    save_json(direction, None)
+    save_json(directory, None)
 
 
 test_cases = [None,

@@ -3,27 +3,26 @@ from image_deallocator import deallocate_img
 from file_tools import save_images
 
 from werkzeug.utils import secure_filename
-from os import makedirs, path, replace
 
 
 def check_if_image_file(file) -> bool:
     """
-
-    :param file:
-    :return:
+    Checks, if file is image file based on ending of file. Currently supported: png, gif, jpg
+    :param file: File from request body
+    :return: Boolean, if file is an image file or not
     """
     return any([file.filename.endswith(image_format) for image_format in [".jpg", ".png", ".gif"]])
 
 
-def save_file_from_request(name: str, file):
+def save_file_from_request(name: str, file) -> None:
     """
-
-    :param name:
-    :param file:
-    :return:
+    Saves given file in img directory and saves meta information in model
+    :param name: Name of image
+    :param file: File from request body
+    :return: None
     """
     if not check_if_image_file(file):
-        return
+        return None
     data = add_original_image(name, secure_filename(file.filename))
     directory = data['dir']
     file.save(directory)
@@ -31,12 +30,12 @@ def save_file_from_request(name: str, file):
 
 def execute_image_deallocation(name: str, id: int, new_name: str, axis: int = 0) -> bool:
     """
-
-    :param name:
-    :param id:
-    :param new_name:
-    :param axis:
-    :return:
+    Executes image task with given data params, saves resulting images in directory and adds paths to meta.
+    :param name: Name of image
+    :param id: Id of image
+    :param new_name: New  name of which image should be generated
+    :param axis: 0 for horizontal and 1 for vertical
+    :return: Boolean whether task was successful or not
     """
     data = get_image(name, id)
     if data is None:

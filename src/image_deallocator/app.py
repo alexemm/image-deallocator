@@ -12,12 +12,21 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 @app.route("/meta", methods=["GET"])
 def get_image_meta():
+    """
+    Returns information for all the names in json format
+    :return: JSON object
+    """
     data = load_json("meta/data.json")
     return jsonify(data)
 
 
 @app.route("/meta/<name>", methods=["GET"])
 def get_image_meta_name(name):
+    """
+    Returns information for all the entries based on the name in JSON format
+    :param name: name of image (not filename)
+    :return: JSON object
+    """
     data = load_json("meta/data.json")
     if id not in data.keys():
         abort(404)
@@ -26,16 +35,30 @@ def get_image_meta_name(name):
 
 @app.route('/img/<path:path>')
 def send_original_img(path):
+    """
+    Serves images on the 'img' path
+    :param path: path to image
+    :return: File from path
+    """
     return send_from_directory('img', path)
 
 
 @app.route('/new_img/<path:path>')
 def send_new_img(path):
+    """
+    Serves images on the 'new_img' path
+    :param path: path to image
+    :return: File from path
+    """
     return send_from_directory('new_img', path)
 
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    """
+    Uploads file from request with form in body with name as string, and file
+    :return: Status, how the file upload went
+    """
     # checking if the file is present or not.
     if 'file' not in request.files or 'name' not in request.form.keys():
         return "No file found"
@@ -47,10 +70,13 @@ def upload_file():
 
 @app.route('/deallocate', methods=['POST'])
 def trigger_image_deallocation():
+    """
+    Triggers image deallocation task
+    :return: Status, how the task went
+    """
     name = request.form['name']
     try:
         id = int(request.form['id'])
-
     except ValueError as e:
         print(e)
         abort(404)
