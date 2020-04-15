@@ -3,6 +3,7 @@ from image_deallocator import deallocate_img
 from file_tools import save_images
 
 from werkzeug.utils import secure_filename
+from os import makedirs, path, replace
 
 
 def check_if_image_file(file) -> bool:
@@ -24,7 +25,8 @@ def save_file_from_request(name: str, file):
     if not check_if_image_file(file):
         return
     data = add_original_image(name, secure_filename(file.filename))
-    file.save(data['dir'])
+    directory = data['dir']
+    file.save(directory)
 
 
 def execute_image_deallocation(name: str, id: int, new_name: str, axis: int = 0) -> bool:

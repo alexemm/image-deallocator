@@ -28,12 +28,11 @@ def add_original_image(name: str, filename: Optional[str] = None):
     if name not in data.keys():
         data[name] = []
     id = len(data[name])
-    if filename is None:
-        filename = '%s.png' % name
-    direction = IMAGE_DIR + "%s/%i/%s" % (name, id, filename)
+    filename = name + '.' + filename.split('.')[-1]
+    directory = IMAGE_DIR + "%i-%s" % (id, filename)
     new_obj = {
         'name': name,
-        'dir': direction,
+        'dir': directory,
         'new_imgs': {}
     }
     data[name].append(new_obj)
@@ -76,8 +75,10 @@ def get_image(name: str, id: int):
     name = name.lower()
     data = load_json(DB_DIR)
     if name not in data.keys():
+        print('this')
         return None
     if id not in range(0, len(data[name])):
+        print('that')
         return None
     return data[name][id]
 
